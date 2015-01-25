@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/binary"
+	"io"
 	"log"
 	"os"
 )
 
 const MAX_OSPATH = 260
+const DEMO_PROTOCOL = 4
 
 type Header struct {
 	DemoFilestamp   [8]byte          // Should be HL2DEMO
@@ -30,13 +32,18 @@ func main() {
 	}
 	fileInfo, _ := file.Stat()
 	log.Println(fileInfo.Name())
-	log.Println(fileInfo.Size())
+	header := parseHeader(file)
+	if header.DemoProtocol != DEMO_PROTOCOL {
+		log.Fatal("Bad demo protocol")
+	}
+	log.Println(header.PlaybackFrames)
+}
 
-	var header Header
-	err = binary.Read(file, binary.LittleEndian, &header)
+func parseHeader(reader io.Reader) *Header {
+	header := &Header{}
+	err := binary.Read(reader, binary.LittleEndian, header)
 	if err != nil {
 		log.Println("binary.Read failed:", err)
 	}
-	log.Println(string(header.ClientName[:]))
-	log.Println(header.PlaybackTime)
+	return header
 }
