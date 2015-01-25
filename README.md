@@ -1,6 +1,15 @@
 # Counter-Strike Global Offensive Demo File Parser
 
 
+## Installation
+
+#### 1.Install Docker
+
+The project contains a dockerfile with all the dependencies.
+
+On macos: `brew install boot2docker`
+
+Create docker image: `docker build -t parser .`
 
 ## Generate Go wrappers
 
